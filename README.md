@@ -12,4 +12,10 @@ This project is of particular interest as a student who uses the iOS notes app o
 lacks some functionality. Though this project will cover only basic features, I would like to eventually 
 build it into an application that functions more smoothly and offers more features than what I currently use.
 
+## User Stories
 
+- As a user, I want to be able to create a note and add text to it
+- As a user, I want to be able to bold, italicise, and higlight the text in a note
+- As a user, I want to be able to save multiple notes that display on a sidebar or are listed
+somewhere in a way that I can scroll through them
+- As a user, I want to be able to search for words or phrases across my notes 
