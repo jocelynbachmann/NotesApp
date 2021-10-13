@@ -3,6 +3,7 @@ package ui;
 import model.Note;
 import model.NotesList;
 
+//TODO why is this not being used
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -54,18 +55,23 @@ public class NotesApp {
                     handleS();
                     break;
                 case "d":
-                    System.out.println("Enter the number of the note you would like to delete");
-                    String noteNumToDelete = input.next();
-                    int indexNumToDelete;
-                    try {
-                        indexNumToDelete = Integer.parseInt(noteNumToDelete) - 1;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Please enter the note according to its number");
-                        break; //TODO: same issue as V case above
+                    if (notesList.isEmpty()) {
+                        System.out.println("There are no notes to delete");
+                    } else {
+                        System.out.println("Enter the number of the note you would like to delete");
+                        String noteNumToDelete = input.next();
+                        int indexNumToDelete;
+                        try {
+                            indexNumToDelete = Integer.parseInt(noteNumToDelete) - 1;
+                        } catch (NumberFormatException e) {
+                            System.out.println("Please enter the note according to its number");
+                            break; //TODO: same issue as V case above
+                        }
+                        Note noteToDelete = notesList.notesList.get(indexNumToDelete);
+                        notesList.deleteNote(noteToDelete);
+                        //TODO: insert call to "vn" function
                     }
-                    Note noteToDelete = notesList.notesList.get(indexNumToDelete);
-                    notesList.deleteNote(noteToDelete);
-                    //TODO: insert call to "vn" function
+                    break;
                 case "q":
                     break LOOP;
             }
@@ -108,8 +114,12 @@ public class NotesApp {
     private void handleS() {
         System.out.println("What are you searching for?");
         String searchInput = input.next();
-        for (Note note: notesList.search(searchInput)) {
-            System.out.println(note.getTitle());
+        if (notesList.search(searchInput).isEmpty()) {
+            System.out.println("There are no notes containing the term or phrase: " + searchInput);
+        } else {
+            for (Note note : notesList.search(searchInput)) {
+                System.out.println(note.getTitle());
+            }
         }
     }
 }

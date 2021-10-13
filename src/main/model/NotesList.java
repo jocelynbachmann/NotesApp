@@ -28,7 +28,7 @@ public class NotesList {
         notesList.remove(note);
     }
 
-    // EFFECTS: filters a list of notes for only those containing the given string and returns this filtered list
+    // EFFECTS: filters a list of notes for only those containing the given string and returns the filtered list
     public List<Note> search(String searchInput) {
         LinkedList<Note> searchList = new LinkedList<>();
         for (Note note : notesList) {
@@ -37,6 +37,11 @@ public class NotesList {
             }
         }
         return searchList;
+    }
+
+    // EFFECTS: returns true if the list is empty, false otherwise
+    public boolean isEmpty() {
+        return notesList.size() == 0;
     }
 
 }
