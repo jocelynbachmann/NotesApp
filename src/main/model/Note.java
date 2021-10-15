@@ -24,4 +24,10 @@ public class Note {
     public String getText() {
         return text;
     }
+
+    // EFFECTS: returns true if the given note is the same as this (i.e. has the same title and text),
+    //          false otherwise
+    public boolean equals(Note note) {
+        return title.equals(note.title) && text.equals(note.text);
+    }
 }

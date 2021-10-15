@@ -3,6 +3,7 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class NotesListTest {
@@ -20,37 +21,44 @@ public class NotesListTest {
         homework = new Note("Anatomy Notes", "The femur is the strongest bone in the human body.");
         emptyList = new NotesList();
         notesList = new NotesList();
-        notesList.addAndSaveNote(dog);
-        notesList.addAndSaveNote(groceries);
-        notesList.addAndSaveNote(homework);
-        searchList = new NotesList();
-        searchList.addAndSaveNote(dog);
-        searchList.addAndSaveNote(homework);
+        notesList.addNote(dog);
+        notesList.addNote(groceries);
+        notesList.addNote(homework);
     }
 
     @Test
-    public void testAddAndSaveNote() {
-        emptyList.addAndSaveNote(dog);
+    public void testAddNote() {
+        emptyList.addNote(dog);
         assertFalse(emptyList.isEmpty());
-        //TODO: test save stuff
     }
 
     @Test
     public void testDeleteNote() {
+        NotesList updatedNotes = new NotesList();
+        updatedNotes.addNote(dog);
+        updatedNotes.addNote(homework);
         notesList.deleteNote(groceries);
-        System.out.println(notesList);
-        // TODO: can't test using size or anything bc it doesn't work on notesList
+        assertEquals(updatedNotes.getNotesList().size(), notesList.getNotesList().size());
+        for (int i = 0; i < updatedNotes.getNotesList().size(); i++) {
+            assertTrue(updatedNotes.getNotesList().get(i).equals(notesList.getNotesList().get(i)));
+        }
     }
 
     @Test
     public void testSuccessSearch() {
-        //TODO: how do I do this
-        assertEquals(notesList.search("bone"), searchList);
+        searchList = new NotesList();
+        searchList.addNote(groceries);
+        searchList.addNote(homework);
+        List<Note> results = notesList.search("bone");
+        assertEquals(results.size(), searchList.getNotesList().size());
+        for (int i = 0; i < results.size(); i++) {
+            assertTrue(results.get(i).equals(searchList.getNotesList().get(i)));
+        }
     }
 
     @Test
     public void testNoResultsSearch() {
-        assertEquals(notesList.search("mud"), emptyList);
+        assertTrue(notesList.search("mud").isEmpty());
     }
 
     @Test

@@ -3,8 +3,7 @@ package ui;
 import model.Note;
 import model.NotesList;
 
-//TODO why is this not being used
-import java.util.LinkedList;
+import java.io.IOException;
 import java.util.Scanner;
 
 // Notes Application
@@ -14,82 +13,51 @@ public class NotesApp {
     private Scanner input;
     private NotesList notesList;
 
-    // EFFECTS: runs the notes application
-    //TODO: and initializes what?
-    public NotesApp() {
+    // EFFECTS: constructs a notes app
+    public NotesApp() throws IOException {
         notesList = new NotesList();
         input = new Scanner(System.in);
         input.useDelimiter("\n");
-        runNotesApp();
     }
 
     // MODIFIES: this
-    // EFFECTS: processes inputs from user
-    private void runNotesApp() {
-        LOOP:
-        while (true) {
+    // EFFECTS: runs notes app by displaying menu to user and processing user inputs
+    public void run() {
+        boolean keepGoing = true;
+        while (keepGoing) {
             displayMenu();
             String command = input.next();
-            System.out.println(command);
-            switch (command) {
-                case "n":
-                    handleN();
-                    break;
-                case "vn":
-                    handleVn();
-                    break;
-                case "v":
-                    System.out.println("Enter the number of the note you would like to view");
-                    String noteNumToView = input.next();
-                    int indexNumToView;
-                    try {
-                        indexNumToView = Integer.parseInt(noteNumToView) - 1;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Please enter the note according to its number");
-                        break; //TODO: don't know what to do about this part when it's in a new fn
-                    }
-                    Note noteToView = notesList.notesList.get(indexNumToView);
-                    System.out.println(noteToView.getTitle() + "\n" + noteToView.getText());
-                    break;
-                case "s":
-                    handleS();
-                    break;
-                case "d":
-                    if (notesList.isEmpty()) {
-                        System.out.println("There are no notes to delete");
-                    } else {
-                        System.out.println("Enter the number of the note you would like to delete");
-                        String noteNumToDelete = input.next();
-                        int indexNumToDelete;
-                        try {
-                            indexNumToDelete = Integer.parseInt(noteNumToDelete) - 1;
-                        } catch (NumberFormatException e) {
-                            System.out.println("Please enter the note according to its number");
-                            break; //TODO: same issue as V case above
-                        }
-                        Note noteToDelete = notesList.notesList.get(indexNumToDelete);
-                        notesList.deleteNote(noteToDelete);
-                        //TODO: insert call to "vn" function
-                    }
-                    break;
-                case "q":
-                    break LOOP;
-            }
+            keepGoing = handleCommand(command);
         }
         System.out.println("\nGoodbye!");
     }
 
-    // EFFECTS: displays options menu to user
-    private void displayMenu() {
-        System.out.println("New Note (n)");
-        System.out.println("View All Notes (vn)");
-        System.out.println("View Note (v)");
-        System.out.println("Search Notes (s)");
-        System.out.println("Delete Note (d)");
-        System.out.println("Quit the App (q)");
+    // MODIFIES: this
+    // EFFECTS: processes inputs from user
+    private boolean handleCommand(String command) {
+        switch (command) {
+            case "n":
+                handleN();
+                break;
+            case "vn":
+                handleVn();
+                break;
+            case "v":
+                handleV();
+                break;
+            case "s":
+                handleS();
+                break;
+            case "d":
+                handleD();
+                break;
+            case "q":
+                return false;
+        }
+        return true;
     }
 
-    // MODIFIES: this and notesList TODO: confused
+    // MODIFIES: this
     // EFFECTS: creates a new note with title and text collected from user inputs
     private void handleN() {
         System.out.println("Input your title");
@@ -97,16 +65,39 @@ public class NotesApp {
         System.out.println("Write your note");
         String text = input.next();
         Note newNote = new Note(title, text);
-        notesList.addAndSaveNote(newNote);
+        notesList.addNote(newNote);
         System.out.println("New note was added");
     }
 
     // EFFECTS: prints a numbered list of the titles of notes in the list
     private void handleVn() {
         int index = 0;
-        for (Note note: notesList.notesList) {
+        for (Note note: notesList.getNotesList()) {
             index++;
-            System.out.println(String.valueOf(index) + ") " + note.getTitle());
+            System.out.println(index + ") " + note.getTitle());
+        }
+    }
+
+    // EFFECTS: if notesList is empty, tells user there are no notes to view,
+    //          else opens (displays the title and text) the note that the user specifies
+    private void handleV() {
+        if (notesList.isEmpty()) {
+            System.out.println("There are no notes to view");
+        } else {
+            System.out.println("Enter the number of the note you would like to view");
+            String noteNumToView = input.next();
+            int indexNumToView = 0;
+            boolean failed = false;
+            try {
+                indexNumToView = Integer.parseInt(noteNumToView) - 1;
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter the note according to its number");
+                failed = true;
+            }
+            if (! failed) {
+                Note noteToView = notesList.getNotesList().get(indexNumToView);
+                System.out.println(noteToView.getTitle() + "\n" + noteToView.getText());
+            }
         }
     }
 
@@ -121,5 +112,40 @@ public class NotesApp {
                 System.out.println(note.getTitle());
             }
         }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: if notesList is empty, tells user there are no notes to delete,
+    //          else deletes the specified note and displays updated list of notes
+    private void handleD() {
+        if (notesList.isEmpty()) {
+            System.out.println("There are no notes to delete");
+        } else {
+            System.out.println("Enter the number of the note you would like to delete");
+            String noteNumToDelete = input.next();
+            int indexNumToDelete = 0;
+            boolean failed = false;
+            try {
+                indexNumToDelete = Integer.parseInt(noteNumToDelete) - 1;
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter the note according to its number");
+                failed = true;
+            }
+            if (! failed) {
+                Note noteToDelete = notesList.getNotesList().get(indexNumToDelete);
+                notesList.deleteNote(noteToDelete);
+                handleVn();
+            }
+        }
+    }
+
+    // EFFECTS: displays options menu to user
+    private void displayMenu() {
+        System.out.println("New Note (n)");
+        System.out.println("View All Notes (vn)");
+        System.out.println("View Note (v)");
+        System.out.println("Search Notes (s)");
+        System.out.println("Delete Note (d)");
+        System.out.println("Quit the App (q)");
     }
 }
