@@ -1,10 +1,14 @@
 package model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 import java.util.LinkedList;
 import java.util.List;
 
 // Represents a list of notes, or an empty list if no notes have been created
-public class NotesList {
+public class NotesList implements Writable {
     private LinkedList<Note> notesList;
 
     // EFFECTS: creates an empty notes list
@@ -44,6 +48,28 @@ public class NotesList {
 
     public List<Note> getNotesList() {
         return (List<Note>) notesList.clone();
+    }
+
+    public int getSize() {
+        return getNotesList().size();
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("notes", notesToJson());
+        return json;
+    }
+
+    // EFFECTS: returns notes in this noteslist as a JSON array
+    private JSONArray notesToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (Note n : notesList) {
+            jsonArray.put(n.toJson());
+        }
+
+        return jsonArray;
     }
 
 }

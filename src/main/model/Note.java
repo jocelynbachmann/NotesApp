@@ -1,7 +1,10 @@
 package model;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 // Represents a note that has a title and a body of text
-public class Note {
+public class Note implements Writable {
     private String text;
     private String title;
 
@@ -29,5 +32,13 @@ public class Note {
     //          false otherwise
     public boolean equals(Note note) {
         return title.equals(note.title) && text.equals(note.text);
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("title", title);
+        json.put("text", text);
+        return json;
     }
 }

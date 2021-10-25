@@ -38,8 +38,8 @@ public class NotesListTest {
         updatedNotes.addNote(dog);
         updatedNotes.addNote(homework);
         notesList.deleteNote(groceries);
-        assertEquals(updatedNotes.getNotesList().size(), notesList.getNotesList().size());
-        for (int i = 0; i < updatedNotes.getNotesList().size(); i++) {
+        assertEquals(updatedNotes.getSize(), notesList.getSize());
+        for (int i = 0; i < updatedNotes.getSize(); i++) {
             assertTrue(updatedNotes.getNotesList().get(i).equals(notesList.getNotesList().get(i)));
         }
     }
@@ -50,7 +50,7 @@ public class NotesListTest {
         searchList.addNote(groceries);
         searchList.addNote(homework);
         List<Note> results = notesList.search("bone");
-        assertEquals(results.size(), searchList.getNotesList().size());
+        assertEquals(results.size(), searchList.getSize());
         for (int i = 0; i < results.size(); i++) {
             assertTrue(results.get(i).equals(searchList.getNotesList().get(i)));
         }
@@ -70,4 +70,10 @@ public class NotesListTest {
     public void testFailIsEmpty() {
         assertFalse(notesList.isEmpty());
     }
+
+    @Test
+    public void testGetSizeEmpty() { assertEquals(0, emptyList.getSize());}
+
+    @Test
+    public void testGetSizeNormal() { assertEquals(3, notesList.getSize());}
 }

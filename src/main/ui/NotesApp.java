@@ -2,27 +2,42 @@ package ui;
 
 import model.Note;
 import model.NotesList;
+import persistence.JsonReader;
+import persistence.JsonWriter;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
 // Notes Application
-// This class references code from the TellerApp project
-// Link: https://github.students.cs.ubc.ca/CPSC210/TellerApp/blob/master/src/main/ca/ubc/cpsc210/bank/ui/TellerApp.java
+// This class references code from the project linked below
+// https://github.students.cs.ubc.ca/CPSC210/TellerApp/blob/master/src/main/ca/ubc/cpsc210/bank/ui/TellerApp.java
 public class NotesApp {
+    private static final String JSON_STORE = "./data/notesList.json";
     private Scanner input;
     private NotesList notesList;
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     // EFFECTS: constructs a notes app
     public NotesApp() throws IOException {
         notesList = new NotesList();
         input = new Scanner(System.in);
         input.useDelimiter("\n");
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
     }
 
     // MODIFIES: this
-    // EFFECTS: runs notes app by displaying menu to user and processing user inputs
+    // EFFECTS: loads noteslist from file and runs notes app by displaying menu to user
+    // and processing user inputs
     public void run() {
+        try {
+            notesList = jsonReader.read();
+            System.out.println("Loaded notes from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
+        }
         boolean keepGoing = true;
         while (keepGoing) {
             displayMenu();
@@ -30,6 +45,16 @@ public class NotesApp {
             keepGoing = handleCommand(command);
         }
         System.out.println("\nGoodbye!");
+    }
+
+    // EFFECTS: displays options menu to user
+    private void displayMenu() {
+        System.out.println("New Note (n)");
+        System.out.println("View All Notes (vn)");
+        System.out.println("View Note (v)");
+        System.out.println("Search Notes (sr)");
+        System.out.println("Delete Note (d)");
+        System.out.println("Quit the App (q)");
     }
 
     // MODIFIES: this
@@ -45,8 +70,8 @@ public class NotesApp {
             case "v":
                 handleV();
                 break;
-            case "s":
-                handleS();
+            case "sr":
+                handleSr();
                 break;
             case "d":
                 handleD();
@@ -57,8 +82,20 @@ public class NotesApp {
         return true;
     }
 
+    // EFFECTS: saves noteslist to file
+    private void save() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(notesList);
+            jsonWriter.close();
+            System.out.println("Saved notes to" + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
     // MODIFIES: this
-    // EFFECTS: creates a new note with title and text collected from user inputs
+    // EFFECTS: creates a new note with title and text collected from user inputs and saves it to file
     private void handleN() {
         System.out.println("Input your title");
         String title = input.next();
@@ -67,6 +104,7 @@ public class NotesApp {
         Note newNote = new Note(title, text);
         notesList.addNote(newNote);
         System.out.println("New note was added");
+        this.save();
     }
 
     // EFFECTS: prints a numbered list of the titles of notes in the list
@@ -102,7 +140,7 @@ public class NotesApp {
     }
 
     // EFFECTS: prints a list of the titles of notes containing the given search input
-    private void handleS() {
+    private void handleSr() {
         System.out.println("What are you searching for?");
         String searchInput = input.next();
         if (notesList.search(searchInput).isEmpty()) {
@@ -134,18 +172,9 @@ public class NotesApp {
             if (! failed) {
                 Note noteToDelete = notesList.getNotesList().get(indexNumToDelete);
                 notesList.deleteNote(noteToDelete);
+                this.save();
                 handleVn();
             }
         }
-    }
-
-    // EFFECTS: displays options menu to user
-    private void displayMenu() {
-        System.out.println("New Note (n)");
-        System.out.println("View All Notes (vn)");
-        System.out.println("View Note (v)");
-        System.out.println("Search Notes (s)");
-        System.out.println("Delete Note (d)");
-        System.out.println("Quit the App (q)");
     }
 }
