@@ -21,5 +21,5 @@ build it into an application that functions more smoothly and offers more featur
 to select a note to open (i.e. view the text of the note)
 - As a user, I want to be able to search for words or phrases across my notes,
 and see a list of all the notes that contain what I searched for
-- As a user, I want my notes to automatically save to file when I quit the application
-- As a user, I want my notes to automatically load from file when I open the application 
+- As a user, I want to be able to save my notes to file 
+- As a user, I want to be able to load my notes from file 

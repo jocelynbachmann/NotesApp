@@ -32,12 +32,6 @@ public class NotesApp {
     // EFFECTS: loads noteslist from file and runs notes app by displaying menu to user
     // and processing user inputs
     public void run() {
-        try {
-            notesList = jsonReader.read();
-            System.out.println("Loaded notes from " + JSON_STORE);
-        } catch (IOException e) {
-            System.out.println("Unable to read from file: " + JSON_STORE);
-        }
         boolean keepGoing = true;
         while (keepGoing) {
             displayMenu();
@@ -49,18 +43,24 @@ public class NotesApp {
 
     // EFFECTS: displays options menu to user
     private void displayMenu() {
+        System.out.println("Load Notes from File (l)");
         System.out.println("New Note (n)");
         System.out.println("View All Notes (vn)");
         System.out.println("View Note (v)");
         System.out.println("Search Notes (sr)");
         System.out.println("Delete Note (d)");
+        System.out.println("Save Notes to File (s)");
         System.out.println("Quit the App (q)");
     }
 
     // MODIFIES: this
     // EFFECTS: processes inputs from user
+    @SuppressWarnings({"checkstyle:MethodLength", "checkstyle:SuppressWarnings"})
     private boolean handleCommand(String command) {
         switch (command) {
+            case "l":
+                load();
+                break;
             case "n":
                 handleN();
                 break;
@@ -76,21 +76,23 @@ public class NotesApp {
             case "d":
                 handleD();
                 break;
+            case "s":
+                save();
+                break;
             case "q":
                 return false;
         }
         return true;
     }
 
-    // EFFECTS: saves noteslist to file
-    private void save() {
+    // MODIFIES: this
+    // EFFECTS: loads noteslist from file
+    private void load() {
         try {
-            jsonWriter.open();
-            jsonWriter.write(notesList);
-            jsonWriter.close();
-            System.out.println("Saved notes to" + JSON_STORE);
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to write to file: " + JSON_STORE);
+            notesList = jsonReader.read();
+            System.out.println("Loaded notes from " + JSON_STORE);
+        } catch (IOException e) {
+            System.out.println("Unable to read from file: " + JSON_STORE);
         }
     }
 
@@ -175,6 +177,18 @@ public class NotesApp {
                 this.save();
                 handleVn();
             }
+        }
+    }
+
+    // EFFECTS: saves noteslist to file
+    private void save() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(notesList);
+            jsonWriter.close();
+            System.out.println("Saved notes to" + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
         }
     }
 }
