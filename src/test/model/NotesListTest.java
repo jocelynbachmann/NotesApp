@@ -45,6 +45,18 @@ public class NotesListTest {
     }
 
     @Test
+    public void testDeleteNoteAtSuccess() {
+        NotesList updatedNotes = new NotesList();
+        updatedNotes.addNote(dog);
+        updatedNotes.addNote(groceries);
+        notesList.deleteNoteAt(2);
+        assertEquals(updatedNotes.getSize(), notesList.getSize());
+        for (int i = 0; i < updatedNotes.getSize(); i++) {
+            assertTrue(updatedNotes.getNotesList().get(i).equals(notesList.getNotesList().get(i)));
+        }
+    }
+
+    @Test
     public void testSuccessSearch() {
         searchList = new NotesList();
         searchList.addNote(groceries);

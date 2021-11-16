@@ -47,6 +47,18 @@ class NoteTest {
     }
 
     @Test
+    public void testSetTitle() {
+        dog.setTitle("My Dog");
+        assertEquals("My Dog", dog.getTitle());
+    }
+
+    @Test
+    public void testSetText() {
+        dog.setText("cats");
+        assertEquals("cats", dog.getText());
+    }
+
+    @Test
     public void testSuccessEquals() {
         assertTrue(dog.equals(dog));
     }

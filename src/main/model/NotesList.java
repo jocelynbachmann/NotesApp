@@ -30,6 +30,13 @@ public class NotesList implements Writable {
         notesList.remove(note);
     }
 
+    // REQUIRES: notesList is not empty
+    // MODIFIES: this
+    // EFFECTS: removes the note at the specified index
+    public void deleteNoteAt(int index) {
+        notesList.remove(index);
+    }
+
     // EFFECTS: filters a list of notes for only those containing the given string and returns the filtered list
     public LinkedList<Note> search(String searchInput) {
         LinkedList<Note> searchList = new LinkedList<>();

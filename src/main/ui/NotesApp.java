@@ -29,8 +29,7 @@ public class NotesApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: loads noteslist from file and runs notes app by displaying menu to user
-    // and processing user inputs
+    // EFFECTS: runs notes app by displaying menu to user and processing user inputs
     public void run() {
         boolean keepGoing = true;
         while (keepGoing) {
@@ -97,7 +96,7 @@ public class NotesApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: creates a new note with title and text collected from user inputs and saves it to file
+    // EFFECTS: creates a new note with title and text collected from user inputs
     private void handleN() {
         System.out.println("Input your title");
         String title = input.next();

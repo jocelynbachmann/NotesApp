@@ -28,10 +28,23 @@ public class Note implements Writable {
         return text;
     }
 
+    public void setTitle(String newTitle) {
+        title = newTitle;
+    }
+    public void setText(String newText) {
+        text = newText;
+    }
+
     // EFFECTS: returns true if the given note is the same as this (i.e. has the same title and text),
     //          false otherwise
     public boolean equals(Note note) {
         return title.equals(note.title) && text.equals(note.text);
+    }
+
+    @Override
+    // EFFECTS: returns the note title as a string
+    public String toString() {
+        return this.getTitle();
     }
 
     @Override
