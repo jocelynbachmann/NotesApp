@@ -1,7 +1,5 @@
 package ui;
 
-import javafx.scene.control.SplitPane;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
@@ -23,6 +21,8 @@ public class NotesUI extends JPanel
     private static final String addNote = "New";
     private static final String saveNote = "Save";
     private static final String deleteNote = "Delete";
+    private static SplashScreen splashScreen;
+    private static final String SPLASH_IMAGE = "notes-8.png";
     private JButton deleteButton;
     private JTextField noteTitle;
     private JTextArea noteText;
@@ -104,7 +104,8 @@ public class NotesUI extends JPanel
         public void contentsChanged(ListDataEvent e) {
 
         }
-        // Sent when the contents of the list has changed in a way that's too complex to characterize with the previous methods.
+        // Sent when the contents of the list has changed in a way that's too complex to characterize with the previous
+        // methods.
 
         public void intervalAdded(ListDataEvent e) {
         }
@@ -306,6 +307,23 @@ public class NotesUI extends JPanel
         }
     }
 
+    // TODO: REQUIRES?
+    // TODO: MODIFIES?
+    // EFFECTS: displays splash screen
+    private static void showSplashScreen() {
+        splashScreen = new SplashScreen(SPLASH_IMAGE);
+        splashScreen.splash();
+    }
+
+    // TODO: REQUIRES?
+    // TODO: MODIFIES?
+    // EFFECTS: removes the splash screen
+    private static final class SplashScreenCloser implements Runnable {
+        @Override public void run() {
+            splashScreen.dispose();
+        }
+    }
+
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
@@ -327,6 +345,8 @@ public class NotesUI extends JPanel
     }
 
     public static void main(String[] args) {
+        showSplashScreen();
+
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -334,5 +354,7 @@ public class NotesUI extends JPanel
                 createAndShowGUI();
             }
         });
+
+        EventQueue.invokeLater(new SplashScreenCloser());
     }
 }
