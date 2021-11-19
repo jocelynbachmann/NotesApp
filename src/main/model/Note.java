@@ -31,6 +31,7 @@ public class Note implements Writable {
     public void setTitle(String newTitle) {
         title = newTitle;
     }
+
     public void setText(String newText) {
         text = newText;
     }

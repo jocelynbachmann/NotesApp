@@ -13,7 +13,6 @@ final class SplashScreen extends Frame {
     private static final ImageObserver NO_OBSERVER = null;
     private static final int IMAGE_ID = 0;
 
-    // TODO: MODIFIES?
     // EFFECTS: constructs a splash screen with the given image.
     SplashScreen(String imageId) {
         if (imageId == null || imageId.trim().length() == 0) {
@@ -22,8 +21,6 @@ final class SplashScreen extends Frame {
         this.imageId = imageId;
     }
 
-    // TODO: REQUIRES?
-    // TODO: MODIFIES?
     // EFFECTS: displays splash screen to user
     public void splash() {
         initImageAndTracker();
@@ -35,18 +32,17 @@ final class SplashScreen extends Frame {
         } catch (InterruptedException ex) {
             System.out.println("Cannot track image load.");
         }
-        SplashWindow splashWindow = new SplashWindow(this, image);
+        new SplashWindow(this, image);
     }
 
-    // TODO: ???
+    // EFFECTS: loads splash screen image from url
     private void initImageAndTracker() {
         mediaTracker = new MediaTracker(this);
         URL imageURL = SplashScreen.class.getResource(imageId);
         image = Toolkit.getDefaultToolkit().getImage(imageURL);
     }
 
-    // TODO: REQUIRES?
-    // TODO: MODIFIES?
+    // MODIFIES: this
     // EFFECTS: centers frame on screen
     private void center() {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -54,9 +50,7 @@ final class SplashScreen extends Frame {
         setLocation((screen.width - frame.width) / 2, (screen.height - frame.height) / 2);
     }
 
-    // TODO: REQUIRES?
-    // TODO: MODIFIES?
-    // EFFECTS: displays splash screen to user
+    // Displays splash screen to user
     private final class SplashWindow extends Window {
         SplashWindow(Frame parent, Image image) {
             super(parent);
@@ -68,7 +62,7 @@ final class SplashScreen extends Frame {
             setVisible(true);
         }
 
-        // TODO: ???
+        // EFFECTS: draws splash screen image
         @Override public void paint(Graphics graphics) {
             if (image1 != null) {
                 graphics.drawImage(image1,0,0,this);
