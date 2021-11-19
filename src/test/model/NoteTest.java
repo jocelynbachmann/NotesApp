@@ -81,4 +81,16 @@ class NoteTest {
         assertFalse(groceries.equals(dog));
     }
 
+    @Test
+    public void testToString() {
+        assertEquals("My Dog", dog.toString());
+    }
+
+    @Test
+    public void testToJson() {
+        dog.toJson();
+        assertEquals(dog.getTitle(), dog.toJson().get("title"));
+        assertEquals(dog.getText(), dog.toJson().get("text"));
+    }
+
 }
