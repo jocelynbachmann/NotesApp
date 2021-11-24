@@ -29,10 +29,12 @@ public class Note implements Writable {
     }
 
     public void setTitle(String newTitle) {
+        EventLog.getInstance().logEvent(new Event("Set note title to: " + newTitle));
         title = newTitle;
     }
 
     public void setText(String newText) {
+        EventLog.getInstance().logEvent(new Event("Set note text to: " + newText));
         text = newText;
     }
 

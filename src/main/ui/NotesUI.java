@@ -22,12 +22,12 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     private DefaultListModel listModel;
 
     private static final String JSON_STORE = "./data/notesList.json";
-    private static final String newNote = "New";
-    private static final String saveNote = "Save";
-    private static final String deleteNote = "Delete";
-    private static final String loadNote = "Open";
-    private static SplashScreen splashScreen;
+    private static final String NEW_NOTE = "New";
+    private static final String SAVE_NOTE = "Save";
+    private static final String DELETE_NOTE = "Delete";
+    private static final String LOAD_NOTE = "Open";
     private static final String SPLASH_IMAGE = "icon.png";
+    private static SplashScreen splashScreen;
     private JButton newButton;
     private JButton deleteButton;
     private JButton saveButton;
@@ -41,9 +41,6 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     // EFFECTS: constructs window for notes app
     public NotesUI() {
         super(new BorderLayout());
-
-        jsonWriter = new JsonWriter(JSON_STORE);
-        jsonReader = new JsonReader(JSON_STORE);
         notesList = new NotesList();
         listModel = new DefaultListModel<Note>();
 
@@ -67,51 +64,63 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     // EFFECTS: creates the list of notes and puts it in a scroll pane
     private JScrollPane createListAndScrollPane() {
         list = new JList(listModel);
+
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.setSelectedIndex(0);
         list.addListSelectionListener(this);
         list.setVisibleRowCount(10);
+
         JScrollPane listScrollPane = new JScrollPane(list);
         return listScrollPane;
     }
 
     // EFFECTS: creates button to add a new note
     private AddNoteListener createNewButton() {
-        newButton = new JButton(newNote);
+        newButton = new JButton(NEW_NOTE);
         AddNoteListener addNoteListener = new AddNoteListener(newButton);
-        newButton.setActionCommand(newNote);
+
+        newButton.setActionCommand(NEW_NOTE);
         newButton.addActionListener(addNoteListener);
         newButton.setEnabled(true);
+
         return addNoteListener;
     }
 
     // EFFECTS: creates button to save a note to file
     private void createSaveButton() {
-        saveButton = new JButton(saveNote);
-        saveButton.setActionCommand(saveNote);
+        saveButton = new JButton(SAVE_NOTE);
+
+        saveButton.setActionCommand(SAVE_NOTE);
         saveButton.addActionListener(new SaveNoteListener(saveButton));
         saveButton.setEnabled(true);
     }
 
     // EFFECTS: creates button to load notes from file
     private void createLoadButton() {
-        loadButton = new JButton(loadNote);
-        loadButton.setActionCommand(loadNote);
+        loadButton = new JButton(LOAD_NOTE);
+
+        loadButton.setActionCommand(LOAD_NOTE);
         loadButton.addActionListener(new LoadNoteListener(loadButton));
         loadButton.setEnabled(true);
     }
 
     // EFFECTS: creates button to delete a note
     private void createDeleteButton() {
-        deleteButton = new JButton(deleteNote);
-        deleteButton.setActionCommand(deleteNote);
+        deleteButton = new JButton(DELETE_NOTE);
+
+        deleteButton.setActionCommand(DELETE_NOTE);
         deleteButton.addActionListener(new DeleteNoteListener());
     }
 
     // EFFECTS: creates field to input title
     private void createTitleField() {
         noteTitle = new JTextField(20);
-        noteTitle.setEnabled(false);
+
+        if (notesList.isEmpty()) {
+            noteTitle.setEnabled(false);
+        } else {
+            noteTitle.setEnabled(true);
+        }
         noteTitle.addActionListener(createNewButton());
         noteTitle.getDocument().addDocumentListener(createNewButton());
     }
@@ -119,6 +128,7 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     // EFFECTS: creates area to input text
     private JPanel createTextArea() {
         noteText = new JTextArea();
+
         noteText.setLineWrap(true);
         noteText.setWrapStyleWord(true);
 
@@ -126,14 +136,17 @@ public class NotesUI extends JPanel implements ListSelectionListener {
         JPanel noteTextPane = new JPanel();
         noteTextPane.setLayout(new BoxLayout(noteTextPane, BoxLayout.Y_AXIS));
         noteTextPane.add(noteTextScrollPane);
+
         return noteTextPane;
     }
 
     // EFFECTS: creates a panel that uses BoxLayout with New, Save, Load, and Delete buttons
     private JPanel createPanel() {
         JPanel buttonPane = new JPanel();
+
         buttonPane.setLayout(new BoxLayout(buttonPane,
                 BoxLayout.LINE_AXIS));
+
         buttonPane.add(deleteButton);
         buttonPane.add(Box.createHorizontalStrut(20));
         buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
@@ -143,6 +156,7 @@ public class NotesUI extends JPanel implements ListSelectionListener {
         buttonPane.add(saveButton);
         buttonPane.add(loadButton);
         buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
         return buttonPane;
     }
 
@@ -184,6 +198,7 @@ public class NotesUI extends JPanel implements ListSelectionListener {
         // EFFECTS: creates a new note
         public void actionPerformed(ActionEvent e) {
             Note note = new Note("New Note", "");
+
             listModel.addElement(note);
             notesList.addNote(note);
             noteText.setText("");
@@ -227,12 +242,22 @@ public class NotesUI extends JPanel implements ListSelectionListener {
 
         // EFFECTS: saves selected note
         public void actionPerformed(ActionEvent e) {
-            int index = list.getSelectedIndex();
-            Note note = notesList.getNotesList().get(index);
-            note.setTitle(noteTitle.getText());
-            note.setText(noteText.getText());
-            listModel.set(index, note);
-            save();
+            try {
+                int index = list.getSelectedIndex();
+                Note note = notesList.getNotesList().get(index);
+
+                note.setTitle(noteTitle.getText());
+                note.setText(noteText.getText());
+                listModel.set(index, note);
+
+                save();
+            } catch (IndexOutOfBoundsException ex) {
+                Object[] options = {"Ok"};
+                JOptionPane.showOptionDialog(null,
+                        "Click 'New' to create a new note before entering the title and text!",
+                        "How to Create a New Note", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                        options, options[0]);
+            }
         }
     }
 
@@ -250,6 +275,7 @@ public class NotesUI extends JPanel implements ListSelectionListener {
         public void actionPerformed(ActionEvent e) {
             load();
             loadButton.setEnabled(false);
+
             list.removeAll();
             for (Note n : notesList.getNotesList()) {
                 listModel.addElement(n);
@@ -276,6 +302,8 @@ public class NotesUI extends JPanel implements ListSelectionListener {
 
     // EFFECTS: saves noteslist to file
     private void save() {
+        jsonWriter = new JsonWriter(JSON_STORE);
+
         try {
             jsonWriter.open();
             jsonWriter.write(notesList);
@@ -289,9 +317,12 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     // MODIFIES: this
     // EFFECTS: loads noteslist from file
     private void load() {
+        jsonReader = new JsonReader(JSON_STORE);
+
         try {
             notesList = jsonReader.read();
             System.out.println("Loaded notes from " + JSON_STORE);
+            noteTitle.setEnabled(true);
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
         }

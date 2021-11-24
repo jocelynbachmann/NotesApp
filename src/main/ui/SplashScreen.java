@@ -7,11 +7,11 @@ import java.awt.image.ImageObserver;
 // Represents a splash screen of a given image that can be displayed before the application opens
 // This class references code from: http://www.javapractices.com/topic/TopicAction.do?Id=149
 final class SplashScreen extends Frame {
+    private static final ImageObserver NO_OBSERVER = null;
+    private static final int IMAGE_ID = 0;
     private final String imageId;
     private MediaTracker mediaTracker;
     private Image image;
-    private static final ImageObserver NO_OBSERVER = null;
-    private static final int IMAGE_ID = 0;
 
     // EFFECTS: constructs a splash screen with the given image.
     SplashScreen(String imageId) {
