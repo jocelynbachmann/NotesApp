@@ -7,6 +7,8 @@ import java.io.IOException;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import model.Event;
+import model.EventLog;
 import model.Note;
 import model.NotesList;
 import persistence.JsonReader;
@@ -309,15 +311,33 @@ public class NotesUI extends JPanel implements ListSelectionListener {
         }
     }
 
-    // EFFECTS: creates and shows GUI for notes app
+    // EFFECTS: creates and shows GUI for notes app, and prints EventLog to console when app is closed
     private static void createAndShowGUI() {
         JFrame frame = new JFrame("ListDemo");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+        WindowListener windowListener = new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                int result = JOptionPane.showConfirmDialog(
+                        frame, "Are you sure you want to close the application?");
+
+                if (result == JOptionPane.OK_OPTION) {
+                    for (Event event : EventLog.getInstance()) {
+                        System.out.println(event.toString());
+                        System.out.println("\n");
+                    }
+                    frame.setVisible(false);
+                    frame.dispose();
+                }
+            }
+        };
 
         JComponent newContentPane = new NotesUI();
         newContentPane.setOpaque(true); //content panes must be opaque
         frame.setContentPane(newContentPane);
 
+        frame.addWindowListener(windowListener);
         frame.pack();
         frame.setVisible(true);
     }
@@ -326,8 +346,6 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     public static void main(String[] args) {
         showSplashScreen();
 
-        //Schedule a job for the event-dispatching thread:
-        //creating and showing this application's GUI.
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 createAndShowGUI();

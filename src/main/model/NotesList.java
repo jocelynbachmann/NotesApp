@@ -19,14 +19,15 @@ public class NotesList implements Writable {
     // MODIFIES: this
     // EFFECTS: creates a new note (adds given note to notesList)
     public void addNote(Note note) {
+        EventLog.getInstance().logEvent(new Event("Added note: " + note.getTitle()));
         notesList.add(note);
-
     }
 
     // REQUIRES: notesList is not empty
     // MODIFIES: this
     // EFFECTS: removes the given note from the list of notes
     public void deleteNote(Note note) {
+        EventLog.getInstance().logEvent(new Event("Deleted note: " + note.getTitle()));
         notesList.remove(note);
     }
 
@@ -34,6 +35,7 @@ public class NotesList implements Writable {
     // MODIFIES: this
     // EFFECTS: removes the note at the specified index
     public void deleteNoteAt(int index) {
+        EventLog.getInstance().logEvent(new Event("Deleted note: " + notesList.get(index).getTitle()));
         notesList.remove(index);
     }
 
@@ -45,6 +47,7 @@ public class NotesList implements Writable {
                 searchList.add(note);
             }
         }
+        EventLog.getInstance().logEvent(new Event("Found search results for: " + searchInput));
         return searchList;
     }
 

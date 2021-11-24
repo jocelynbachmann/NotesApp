@@ -1,5 +1,6 @@
 package ui;
 
+import model.EventLog;
 import model.Note;
 import model.NotesList;
 import persistence.JsonReader;
