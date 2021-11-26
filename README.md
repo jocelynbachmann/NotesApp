@@ -70,3 +70,15 @@ Set note text to: yellow flower
 
 Tue Nov 23 21:29:57 PST 2021
 Deleted note: hat
+
+## Phase 4: Task 3
+Note: the SplashScreen class was not included as I was told not to include static classes.
+
+Overall, I think that my project is relatively well-structured and has very readable code and simple design.
+Given more time, the only refactoring I can think to do relates to the relationship between NotesUI and Note:
+- Currently, updating a note (including setting its initial title and text upon
+creation) involves getting the inputs to the UI for the title and text fields, converting these inputs
+into strings, and then updating the note, meaning you essentially have to keep the UI and note in 
+sync manually. A better approach would be to bind the data between a note and the text and title fields of
+the UI so that the synchronization happens automatically. Though I'm not sure exactly how I would do this,
+I think that binding data can be done using specific Java libraries. 

@@ -35,8 +35,6 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     private JTextField noteTitle;
     private JTextArea noteText;
     private NotesList notesList;
-    private JsonWriter jsonWriter;
-    private JsonReader jsonReader;
 
     // EFFECTS: constructs window for notes app
     public NotesUI() {
@@ -161,31 +159,40 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     }
 
     // Represents a listener for deleting a note
-    class DeleteNoteListener implements ActionListener {
+    private class DeleteNoteListener implements ActionListener {
 
         // EFFECTS: deletes selected note
         public void actionPerformed(ActionEvent e) {
-            int index = list.getSelectedIndex();
-            listModel.remove(index);
-            notesList.deleteNoteAt(index);
+            try {
+                int index = list.getSelectedIndex();
+                listModel.remove(index);
+                notesList.deleteNoteAt(index);
 
-            int size = listModel.getSize();
+                int size = listModel.getSize();
 
-            if (size == 0) {
-                deleteButton.setEnabled(false);
-            } else {
-                if (index == listModel.getSize()) {
-                    index--;
+                if (size == 0) {
+                    deleteButton.setEnabled(false);
+                } else {
+                    if (index == listModel.getSize()) {
+                        index--;
+                    }
+
+                    list.setSelectedIndex(index);
+                    list.ensureIndexIsVisible(index);
                 }
-
-                list.setSelectedIndex(index);
-                list.ensureIndexIsVisible(index);
+            } catch (IndexOutOfBoundsException ex) {
+                Object[] options = {"Ok"};
+                JOptionPane.showOptionDialog(null,
+                        "You have no notes to delete! Click 'New' to create a new note and then enter the title"
+                                + " and text.",
+                        "How to Create a New Note", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
+                        options, options[0]);
             }
         }
     }
 
     // Represents a listener for creating a new note
-    class AddNoteListener implements ActionListener, DocumentListener {
+    private class AddNoteListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
         private JButton button;
 
@@ -231,7 +238,7 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     }
 
     // Represents a listener for saving a note
-    class SaveNoteListener implements ActionListener {
+    private class SaveNoteListener implements ActionListener {
         private JButton button;
 
         // MODIFIES: this
@@ -254,7 +261,8 @@ public class NotesUI extends JPanel implements ListSelectionListener {
             } catch (IndexOutOfBoundsException ex) {
                 Object[] options = {"Ok"};
                 JOptionPane.showOptionDialog(null,
-                        "Click 'New' to create a new note before entering the title and text!",
+                        "You have no notes to save! Click 'New' to create a new note and then enter the title "
+                                + "and text.",
                         "How to Create a New Note", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null,
                         options, options[0]);
             }
@@ -262,7 +270,7 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     }
 
     // Represents a listener for loading notes
-    class LoadNoteListener implements ActionListener {
+    private class LoadNoteListener implements ActionListener {
         private JButton button;
 
         // MODIFIES: this
@@ -302,7 +310,7 @@ public class NotesUI extends JPanel implements ListSelectionListener {
 
     // EFFECTS: saves noteslist to file
     private void save() {
-        jsonWriter = new JsonWriter(JSON_STORE);
+        JsonWriter jsonWriter = new JsonWriter(JSON_STORE);
 
         try {
             jsonWriter.open();
@@ -317,7 +325,7 @@ public class NotesUI extends JPanel implements ListSelectionListener {
     // MODIFIES: this
     // EFFECTS: loads noteslist from file
     private void load() {
-        jsonReader = new JsonReader(JSON_STORE);
+        JsonReader jsonReader = new JsonReader(JSON_STORE);
 
         try {
             notesList = jsonReader.read();
