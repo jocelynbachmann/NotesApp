@@ -15,8 +15,6 @@ import persistence.JsonReader;
 import persistence.JsonWriter;
 
 // Creates the GUI for a notes app
-// This class references code from the ListDemo example found at source linked below
-// https://docs.oracle.com/javase/tutorial/uiswing/examples/components/index.html
 public class NotesUI extends JPanel implements ListSelectionListener {
     private JList list;
     private DefaultListModel listModel;
@@ -225,16 +223,9 @@ public class NotesUI extends JPanel implements ListSelectionListener {
         }
 
         // Required by DocumentListener.
-        public void insertUpdate(DocumentEvent e) {
-        }
-
-        // Required by DocumentListener.
-        public void removeUpdate(DocumentEvent e) {
-        }
-
-        // Required by DocumentListener.
-        public void changedUpdate(DocumentEvent e) {
-        }
+        public void insertUpdate(DocumentEvent e) {}
+        public void removeUpdate(DocumentEvent e) {}
+        public void changedUpdate(DocumentEvent e) {}
     }
 
     // Represents a listener for saving a note

@@ -8,8 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 // Represents a reader that reads noteslist from JSON data stored in file
-// This class and its corresponding test classes reference code from the project linked below
-// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 public class JsonWriter {
     private static final int TAB = 4;
     private PrintWriter writer;

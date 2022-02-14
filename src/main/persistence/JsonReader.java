@@ -12,8 +12,6 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 // Represents a writer that writes JSON representation of noteslist to file
-// This class and its corresponding test classes reference code from the project linked below
-// https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo
 public class JsonReader {
     private String source;
 

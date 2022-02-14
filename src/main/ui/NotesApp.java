@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.util.Scanner;
 
 // Notes Application
-// This class references code from the project linked below
-// https://github.students.cs.ubc.ca/CPSC210/TellerApp/blob/master/src/main/ca/ubc/cpsc210/bank/ui/TellerApp.java
 public class NotesApp {
     private static final String JSON_STORE = "./data/notesList.json";
     private Scanner input;
